@@ -7,6 +7,8 @@ os.makedirs(PROFILES_FOLDER, exist_ok=True)
 
 class Profile:
     def __init__(self, name:str):
+        if not name:
+            raise ValueError("Profile name cannot be empty.")
         self.name = name
         self.hotkeys = []
         try:
@@ -22,7 +24,6 @@ class Profile:
         for d in dict_list:
             hotkey = Hotkey(d["key_combination"], d["text"])
             self.hotkeys.append(hotkey)
-            
             
     def get_hotkeys_as_dict(self):
         return [hotkey.as_dict() for hotkey in self.hotkeys]
@@ -57,11 +58,13 @@ class Profile:
         return self.hotkeys
     
     def delete(self):
+        self.unhook_all()
         try:
             os.remove(f"{PROFILES_FOLDER}/{self.name}.json")
         except FileNotFoundError:
             pass
         self.hotkeys = []
+        print(f"Profile '{self.name}' deleted.")
     
     def edit_hotkey(self, index:int, new_text:str = None, new_key_combination:str = None):
         hotkey = self.hotkeys[index]
@@ -70,6 +73,10 @@ class Profile:
         if new_key_combination is not None:
             hotkey.edit_key_combination(new_key_combination)
         self.save()
+        
+    def unhook_all(self):
+        for hotkey in self.hotkeys:
+            hotkey.unregister_hotkey()
     
     def __str__(self):
         s = f"Profile(name={self.name}, hotkeys=[\n"
@@ -96,6 +103,7 @@ if __name__ == "__main__":
     for hk in profile.list_hotkeys():
         print(hk)
 
+    exit()
     # Edit the first hotkey
     profile.edit_hotkey(0, new_text="Updated text")
     print("Edited first hotkey.")

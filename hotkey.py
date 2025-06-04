@@ -4,23 +4,28 @@ class Hotkey:
     def __init__(self, key_combination, text_to_paste):
         self.key_combination = key_combination
         self.text = text_to_paste
-        self.callback = lambda: keyboard.write(text_to_paste)
+        self._hotkey_handler = None
         self.register_hotkey()
 
     def register_hotkey(self):
-        keyboard.add_hotkey(self.key_combination, self.callback)
+        if not self.text:
+            self.unregister_hotkey()
+            return
+        self.unregister_hotkey()  # Ensure no duplicate registration
+        print(f"Registering hotkey: {self.key_combination} to paste text: '{self.text}'")
+        self._hotkey_handler = keyboard.add_hotkey(self.key_combination, lambda: keyboard.write(self.text), timeout=2)
 
     def unregister_hotkey(self):
-        keyboard.remove_hotkey(self.key_combination)
+        if self._hotkey_handler is not None:
+            print(f"Unregistering hotkey: {self.key_combination}")
+            keyboard.remove_hotkey(self._hotkey_handler)
+            self._hotkey_handler = None
         
     def edit_text(self, new_text):
-        self.callback = lambda: keyboard.write(new_text)
         self.text = new_text
-        self.unregister_hotkey()
         self.register_hotkey()
         
     def edit_key_combination(self, new_key_combination):
-        self.unregister_hotkey()
         self.key_combination = new_key_combination
         self.register_hotkey()
         
