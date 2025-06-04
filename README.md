@@ -20,4 +20,4 @@ Clone the repository and navigate to the project directory. then:
 
 ### Run the Application
 
-`python main.py` or double-click `main.pyw`
+`python main.pyw` or double-click `main.pyw`
