@@ -1,6 +1,9 @@
 from hotkeys_profile import Profile
 import customtkinter as ctk
 from CTkMessagebox import CTkMessagebox
+import pyperclip
+
+DEFAULT_TO_TEXT_FROM_CLIPBOARD = True
 
 class Hotkey_GUI():
     def __init__(self, hotkey, row, frame):
@@ -53,7 +56,11 @@ class Profile_GUI(Profile):
             key_combination = ctk.CTkInputDialog(title="Add Hotkey", text="Enter key combination (e.g., Ctrl+Shift+A):").get_input()
             if not key_combination:
                 return
-            self.add_hotkey_new(key_combination, "")
+            
+            text = ''
+            if DEFAULT_TO_TEXT_FROM_CLIPBOARD:
+                text = pyperclip.paste()
+            self.add_hotkey_new(key_combination, text)
         except ValueError as e:
             CTkMessagebox(title="Error", message=str(e), icon="cancel")
             return
