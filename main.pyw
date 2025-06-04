@@ -1,9 +1,23 @@
-import customtkinter as ctk
+import sys
 import os
+import customtkinter as ctk
 from hotkeys_profile import PROFILES_FOLDER
 from CTkMessagebox import CTkMessagebox
 from profile_gui import Profile_GUI
- 
+
+LOCKFILE = os.path.join(os.path.expanduser("~"), ".custom_hotkeys.lock")
+
+def check_already_running():
+    if os.path.exists(LOCKFILE):
+        # Optionally, check if the process is still running by reading the PID from the lock file
+        print("Another instance is already running.")
+        sys.exit(0)
+    with open(LOCKFILE, "w") as f:
+        f.write(str(os.getpid()))
+
+def remove_lockfile():
+    if os.path.exists(LOCKFILE):
+        os.remove(LOCKFILE)
 
 class App(ctk.CTk):
     def __init__(self):
@@ -118,5 +132,9 @@ class App(ctk.CTk):
             new = self.add_profile()
         
 if __name__ == "__main__":
-    app = App()
-    app.mainloop()
+    check_already_running()
+    try:
+        app = App()
+        app.mainloop()
+    finally:
+        remove_lockfile()
