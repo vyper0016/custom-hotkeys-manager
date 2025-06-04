@@ -1,4 +1,7 @@
 import keyboard
+import pyperclip
+
+COPY_SNIPPET_ON_HOTKEY = True
 
 class Hotkey:
     def __init__(self, key_combination, text_to_paste):
@@ -13,7 +16,13 @@ class Hotkey:
             return
         self.unregister_hotkey()  # Ensure no duplicate registration
         print(f"Registering hotkey: {self.key_combination} to paste text: '{self.text}'")
-        self._hotkey_handler = keyboard.add_hotkey(self.key_combination, lambda: keyboard.write(self.text), timeout=2)
+        
+        def on_hotkey():
+            if COPY_SNIPPET_ON_HOTKEY:
+                pyperclip.copy(self.text)                
+            keyboard.write(self.text)
+            
+        self._hotkey_handler = keyboard.add_hotkey(self.key_combination, on_hotkey, timeout=2)
 
     def unregister_hotkey(self):
         if self._hotkey_handler is not None:
