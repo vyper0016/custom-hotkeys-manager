@@ -2,7 +2,7 @@
 
 A simple custom hotkeys manager that allows you to define hotkeys to insert text snippets.
 
-![Demo](https://raw.githubusercontent.com/yourusername/custom-hotkeys-manager/main/demo/ss1.png)
+![Demo](https://raw.githubusercontent.com/vyper0016/custom-hotkeys-manager/main/demo/ss1.png)
 
 ## Features
 
