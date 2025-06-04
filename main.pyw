@@ -9,7 +9,7 @@ LOCKFILE = os.path.join(os.path.expanduser("~"), ".custom_hotkeys.lock")
 
 def check_already_running():
     if os.path.exists(LOCKFILE):
-        # Optionally, check if the process is still running by reading the PID from the lock file
+        # check if the process is still running by reading the PID from the lock file
         print("Another instance is already running.")
         sys.exit(0)
     with open(LOCKFILE, "w") as f:
